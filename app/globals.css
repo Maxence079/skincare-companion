@@ -5,6 +5,48 @@
  * Premium organic aesthetic inspired by Aesop
  */
 
+@theme {
+  /* Sage Colors */
+  --color-sage-50: #F5F6F5;
+  --color-sage-100: #E8EBE9;
+  --color-sage-200: #D1D7D3;
+  --color-sage-300: #A8B2AB;
+  --color-sage-400: #879388;
+  --color-sage-500: #6B7F6E;
+  --color-sage-600: #5A6D5D;
+  --color-sage-700: #4F5F51;
+  --color-sage-800: #404E42;
+  --color-sage-900: #2D3730;
+
+  /* Terracotta Colors */
+  --color-terracotta-50: #F9F4F2;
+  --color-terracotta-100: #F2E7E1;
+  --color-terracotta-200: #E5CDC3;
+  --color-terracotta-300: #D3A794;
+  --color-terracotta-400: #C59378;
+  --color-terracotta-500: #B8826B;
+  --color-terracotta-600: #A26B54;
+  --color-terracotta-700: #845545;
+  --color-terracotta-800: #6A453A;
+  --color-terracotta-900: #4E3329;
+
+  /* Warm Neutrals */
+  --color-warm-50: #F5F3F0;
+  --color-warm-100: #E8E4DD;
+  --color-warm-200: #D9D4CB;
+  --color-warm-300: #C8C3B9;
+  --color-warm-400: #A9A49A;
+  --color-warm-500: #8A857A;
+  --color-warm-600: #6E6960;
+  --color-warm-700: #5A564F;
+  --color-warm-800: #434039;
+  --color-warm-900: #2E2B27;
+
+  /* Font Families */
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-display: 'Cormorant Garamond', Georgia, serif;
+}
+
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
