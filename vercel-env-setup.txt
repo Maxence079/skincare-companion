@@ -1,0 +1,20 @@
+# Run these commands to add environment variables to Vercel:
+
+# Database credentials
+vercel env add SUPABASE_DB_HOST production preview development
+vercel env add SUPABASE_DB_PASSWORD production preview development
+vercel env add SUPABASE_DB_USER production preview development
+vercel env add SUPABASE_DB_PORT production preview development
+vercel env add SUPABASE_DB_NAME production preview development
+
+# Supabase API credentials
+vercel env add NEXT_PUBLIC_SUPABASE_URL production preview development
+vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production preview development
+vercel env add SUPABASE_SERVICE_ROLE_KEY production preview development
+
+# Optional: Other API keys
+vercel env add ANTHROPIC_API_KEY production preview development
+vercel env add OPENWEATHER_API_KEY production preview development
+
+# After adding variables, redeploy:
+vercel --prod
