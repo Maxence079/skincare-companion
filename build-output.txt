@@ -1,0 +1,28 @@
+   ▲ Next.js 15.5.4
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./lib/ai-onboarding/adaptive-questioning.ts
+Error:   [31mx[0m Expected ',', got 's'
+     ,-[[36;1;4mC:\Users\Maxen\OneDrive\Bureau\SkinCare Companion\SkinCare Companion Code\lib\ai-onboarding\adaptive-questioning.ts[0m:102:1]
+ [2m 99[0m |       engagementLevel: 'high',
+ [2m100[0m |       questioningStyle: 'User is highly engaged. Dive deep with follow-up questions. Explore nuances and patterns they mention. You can ask 2-3 related questions in sequence.',
+ [2m101[0m |       examplePrompts: [
+ [2m102[0m |         'That's really interesting - can you tell me more about what that feels like?',
+     : [35;1m              ^[0m
+ [2m103[0m |         'You mentioned X earlier - how does that connect with what you just shared?',
+ [2m104[0m |         'I'm curious about the timing - does this happen more in certain situations?'
+ [2m105[0m |       ],
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./lib/ai-onboarding/adaptive-questioning.ts
+./app/api/ai/fully-driven/route.ts
+
+
+> Build failed because of webpack errors

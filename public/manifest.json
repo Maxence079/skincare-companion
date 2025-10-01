@@ -1,0 +1,42 @@
+{
+  "name": "SkinCare Companion - AI Skincare Assistant",
+  "short_name": "SkinCare Companion",
+  "description": "AI-powered skincare companion for professional women seeking premium, personalized skincare routines",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F3F0",
+  "theme_color": "#6B7F6E",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "categories": ["health", "lifestyle", "beauty"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "prefer_related_applications": false
+}

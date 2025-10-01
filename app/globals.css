@@ -1,0 +1,281 @@
+@import "tailwindcss";
+
+/**
+ * SkinCare Companion - Botanical Minimalism Design System
+ * Premium organic aesthetic inspired by Aesop
+ */
+
+:root {
+  /* Brand Colors */
+  --sage-500: #6B7F6E;
+  --sage-600: #5A6D5D;
+  --sage-700: #4F5F51;
+  --terracotta-500: #B8826B;
+  --terracotta-600: #A26B54;
+
+  /* Warm Neutrals */
+  --warm-50: #F5F3F0;
+  --warm-100: #E8E4DD;
+  --warm-300: #C8C3B9;
+  --warm-500: #8A857A;
+  --warm-700: #5A564F;
+  --warm-900: #2E2B27;
+
+  /* Semantic */
+  --success: #4A7C59;
+  --error: #B44C3D;
+  --warning: #C89B5A;
+  --info: #5F7A8A;
+
+  /* Base */
+  --background: #FFFFFF;
+  --background-secondary: #F9F7F4;
+  --foreground: #2E2B27;
+  --foreground-secondary: #5A564F;
+  --foreground-muted: #8A857A;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Typography */
+  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-cormorant: 'Cormorant Garamond', Georgia, serif;
+
+  /* Accessibility */
+  --base-font-size: 16px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-inter: var(--font-inter);
+  --font-cormorant: var(--font-cormorant);
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  font-size: var(--base-font-size);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* Typography Utilities */
+.text-display-xl {
+  font-family: var(--font-cormorant);
+  font-size: 2rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+.text-display-l {
+  font-family: var(--font-cormorant);
+  font-size: 1.75rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+/* Button Base Styles */
+button, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Focus Visible Styles (Accessibility) */
+:focus-visible {
+  outline: 2px solid var(--sage-500);
+  outline-offset: 2px;
+}
+
+/* Selection Color */
+::selection {
+  background: rgba(107, 127, 110, 0.2);
+  color: var(--foreground);
+}
+
+/* Scrollbar Styling (Webkit) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--warm-50);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--warm-300);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sage-500);
+}
+
+/* Smooth Scroll */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ======================================== */
+
+/* High Contrast Mode */
+[data-contrast="high"] {
+  --background: #FFFFFF;
+  --foreground: #000000;
+  --sage-500: #2D3A2E;
+  --sage-600: #1F2820;
+  --warm-300: #666666;
+  --warm-500: #444444;
+  --error: #CC0000;
+  --success: #008800;
+  --warning: #CC8800;
+}
+
+[data-contrast="high"] * {
+  border-color: #000000 !important;
+}
+
+[data-contrast="high"] button,
+[data-contrast="high"] [role="button"] {
+  border: 2px solid #000000 !important;
+}
+
+/* Enhanced Focus Indicators */
+[data-focus-enhanced="true"] :focus-visible {
+  outline: 4px solid var(--sage-500);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 6px rgba(107, 127, 110, 0.2);
+}
+
+/* Motion Preferences */
+[data-motion="reduced"] * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+[data-motion="none"] * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Screen Reader Only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Skip to Main Content Link */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--sage-600);
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 0 0 4px 0;
+  z-index: 100;
+}
+
+.skip-to-main:focus {
+  top: 0;
+}
+
+/* High Contrast Focus Visible */
+@media (prefers-contrast: high) {
+  :focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 3px;
+  }
+}
+
+/* Reduced Motion for System Preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Touch Target Sizing (WCAG 2.5.5) */
+button,
+a,
+[role="button"],
+[role="link"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Ensure text has sufficient contrast */
+@media (prefers-contrast: more) {
+  body {
+    --foreground-muted: #333333;
+  }
+}
+
+/**
+ * Performance-Optimized Animations
+ * CSS-based animations (faster than JS-based)
+ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+/* Respect motion preferences */
+[data-motion="reduced"] .animate-fade-in,
+[data-motion="none"] .animate-fade-in {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
