@@ -91,6 +91,7 @@ export function FullyAIDrivenOnboardingPremium() {
   const [currentPhase, setCurrentPhase] = useState(0);
   const [profile, setProfile] = useState<any>(null);
   const [estimatedTimeRemaining, setEstimatedTimeRemaining] = useState(5);
+  const [aiSuggestions, setAiSuggestions] = useState<string[] | null>(null);
 
   // Photo upload state
   const [showPhotoUpload, setShowPhotoUpload] = useState(false);
@@ -126,18 +127,45 @@ export function FullyAIDrivenOnboardingPremium() {
   }, [messages]);
 
   const startConversation = async () => {
-    // Implementation here
-    const initialMessage: Message = {
-      role: 'assistant',
-      content: "Welcome to your personalized skincare consultation. I'm here to understand your unique skin and create a tailored plan just for you.\n\nLet's start with the basics: How would you describe your skin?",
-      timestamp: new Date()
-    };
-    setMessages([initialMessage]);
-    setSessionId('demo-session');
+    try {
+      const response = await fetch('/api/ai/fully-driven', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'start',
+          geolocation: geolocation || undefined
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to start conversation');
+      }
+
+      const data = await response.json();
+
+      const initialMessage: Message = {
+        role: 'assistant',
+        content: data.message,
+        timestamp: new Date()
+      };
+
+      setMessages([initialMessage]);
+      setSessionId(data.sessionId);
+      setEnvironmentCollected(data.environmentCollected || false);
+    } catch (error) {
+      console.error('Failed to start conversation:', error);
+      const errorMessage: Message = {
+        role: 'assistant',
+        content: "I'm having trouble starting our conversation. Please refresh the page and try again.",
+        timestamp: new Date(),
+        isError: true
+      };
+      setMessages([errorMessage]);
+    }
   };
 
   const handleQuickReply = async (reply: string) => {
-    if (isLoading) return;
+    if (isLoading || !sessionId) return;
 
     // Create user message immediately
     const userMessage: Message = {
@@ -149,43 +177,67 @@ export function FullyAIDrivenOnboardingPremium() {
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const userMessageCount = messages.filter(m => m.role === 'user').length + 1;
+    try {
+      const response = await fetch('/api/ai/fully-driven', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'message',
+          sessionId: sessionId,
+          message: reply
+        })
+      });
 
-      // Dynamic responses based on phase
-      const responses = [
-        "Perfect, I understand your skin better now. Next, what are your main skin concerns? What would you like to improve or address?",
-        "Great information! Now, tell me about your current skincare routine. What products do you typically use?",
-        "Excellent. Understanding your environment helps me tailor recommendations. Where do you spend most of your time, and what's your climate like?",
-        "Thank you for sharing all this! I have everything I need to create your personalized profile. Let's capture a baseline photo to track your progress over time."
-      ];
-
-      // After 4 user messages, complete the consultation
-      if (userMessageCount >= 4) {
-        const aiMessage: Message = {
-          role: 'assistant',
-          content: responses[3],
-          timestamp: new Date()
-        };
-        setMessages(prev => [...prev, aiMessage]);
-        setIsLoading(false);
-
-        // Trigger completion after a short delay
-        setTimeout(() => {
-          setIsDone(true);
-          setProfile({ id: 'demo-profile' });
-        }, 1000);
-      } else {
-        const aiMessage: Message = {
-          role: 'assistant',
-          content: responses[userMessageCount - 1],
-          timestamp: new Date()
-        };
-        setMessages(prev => [...prev, aiMessage]);
-        setIsLoading(false);
+      if (!response.ok) {
+        throw new Error('Failed to get AI response');
       }
-    }, 1500);
+
+      const data = await response.json();
+
+      // Add AI response to messages
+      const aiMessage: Message = {
+        role: 'assistant',
+        content: data.message,
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, aiMessage]);
+
+      // Update AI-generated suggestions
+      if (data.suggestions && Array.isArray(data.suggestions)) {
+        setAiSuggestions(data.suggestions);
+      } else {
+        setAiSuggestions(null);
+      }
+
+      // Update phase if provided
+      if (typeof data.currentPhase === 'number') {
+        setCurrentPhase(data.currentPhase);
+      }
+
+      // Update estimated time
+      if (typeof data.estimatedCompletion === 'number') {
+        setEstimatedTimeRemaining(data.estimatedCompletion);
+      }
+
+      // Check if conversation is complete
+      if (data.isDone && data.profile) {
+        setIsDone(true);
+        setProfile(data.profile);
+      }
+
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      const errorMessage: Message = {
+        role: 'assistant',
+        content: "I had trouble processing that. Could you try again?",
+        timestamp: new Date(),
+        isError: true
+      };
+      setMessages(prev => [...prev, errorMessage]);
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -196,11 +248,12 @@ export function FullyAIDrivenOnboardingPremium() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputValue.trim() || isLoading) return;
+    if (!inputValue.trim() || isLoading || !sessionId) return;
 
+    const messageText = inputValue;
     const userMessage: Message = {
       role: 'user',
-      content: inputValue,
+      content: messageText,
       timestamp: new Date()
     };
 
@@ -208,43 +261,67 @@ export function FullyAIDrivenOnboardingPremium() {
     setInputValue('');
     setIsLoading(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const userMessageCount = messages.filter(m => m.role === 'user').length + 1;
+    try {
+      const response = await fetch('/api/ai/fully-driven', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'message',
+          sessionId: sessionId,
+          message: messageText
+        })
+      });
 
-      // Dynamic responses based on phase
-      const responses = [
-        "Perfect, I understand your skin better now. Next, what are your main skin concerns? What would you like to improve or address?",
-        "Great information! Now, tell me about your current skincare routine. What products do you typically use?",
-        "Excellent. Understanding your environment helps me tailor recommendations. Where do you spend most of your time, and what's your climate like?",
-        "Thank you for sharing all this! I have everything I need to create your personalized profile. Let's capture a baseline photo to track your progress over time."
-      ];
-
-      // After 4 user messages, complete the consultation
-      if (userMessageCount >= 4) {
-        const aiMessage: Message = {
-          role: 'assistant',
-          content: responses[3],
-          timestamp: new Date()
-        };
-        setMessages(prev => [...prev, aiMessage]);
-        setIsLoading(false);
-
-        // Trigger completion after a short delay
-        setTimeout(() => {
-          setIsDone(true);
-          setProfile({ id: 'demo-profile' });
-        }, 1000);
-      } else {
-        const aiMessage: Message = {
-          role: 'assistant',
-          content: responses[userMessageCount - 1],
-          timestamp: new Date()
-        };
-        setMessages(prev => [...prev, aiMessage]);
-        setIsLoading(false);
+      if (!response.ok) {
+        throw new Error('Failed to get AI response');
       }
-    }, 1500);
+
+      const data = await response.json();
+
+      // Add AI response to messages
+      const aiMessage: Message = {
+        role: 'assistant',
+        content: data.message,
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, aiMessage]);
+
+      // Update AI-generated suggestions
+      if (data.suggestions && Array.isArray(data.suggestions)) {
+        setAiSuggestions(data.suggestions);
+      } else {
+        setAiSuggestions(null);
+      }
+
+      // Update phase if provided
+      if (typeof data.currentPhase === 'number') {
+        setCurrentPhase(data.currentPhase);
+      }
+
+      // Update estimated time
+      if (typeof data.estimatedCompletion === 'number') {
+        setEstimatedTimeRemaining(data.estimatedCompletion);
+      }
+
+      // Check if conversation is complete
+      if (data.isDone && data.profile) {
+        setIsDone(true);
+        setProfile(data.profile);
+      }
+
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      const errorMessage: Message = {
+        role: 'assistant',
+        content: "I had trouble processing that. Could you try again?",
+        timestamp: new Date(),
+        isError: true
+      };
+      setMessages(prev => [...prev, errorMessage]);
+      setIsLoading(false);
+    }
   };
 
   // Photo capture handler
@@ -1114,14 +1191,14 @@ export function FullyAIDrivenOnboardingPremium() {
 
           {/* Input Area */}
           <div className="border-t border-warm-200 pt-6 space-y-4">
-            {/* Quick Replies */}
-            {!isLoading && PHASES[currentPhase].quickReplies && (
+            {/* Quick Replies - Use AI suggestions if available, otherwise use phase defaults */}
+            {!isLoading && (aiSuggestions || PHASES[currentPhase].quickReplies) && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex flex-wrap gap-2"
               >
-                {PHASES[currentPhase].quickReplies!.map((reply, idx) => (
+                {(aiSuggestions || PHASES[currentPhase].quickReplies)!.map((reply, idx) => (
                   <motion.button
                     key={idx}
                     initial={{ opacity: 0, scale: 0.9 }}
