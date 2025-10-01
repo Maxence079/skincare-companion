@@ -5,96 +5,29 @@
  * Premium organic aesthetic inspired by Aesop
  */
 
-:root {
-  /* Brand Colors */
-  --sage-500: #6B7F6E;
-  --sage-600: #5A6D5D;
-  --sage-700: #4F5F51;
-  --terracotta-500: #B8826B;
-  --terracotta-600: #A26B54;
-
-  /* Warm Neutrals */
-  --warm-50: #F5F3F0;
-  --warm-100: #E8E4DD;
-  --warm-300: #C8C3B9;
-  --warm-500: #8A857A;
-  --warm-700: #5A564F;
-  --warm-900: #2E2B27;
-
-  /* Semantic */
-  --success: #4A7C59;
-  --error: #B44C3D;
-  --warning: #C89B5A;
-  --info: #5F7A8A;
-
-  /* Base */
-  --background: #FFFFFF;
-  --background-secondary: #F9F7F4;
-  --foreground: #2E2B27;
-  --foreground-secondary: #5A564F;
-  --foreground-muted: #8A857A;
-
-  /* Spacing */
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2rem;
-
-  /* Border Radius */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-
-  /* Typography */
-  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-cormorant: 'Cormorant Garamond', Georgia, serif;
-
-  /* Accessibility */
-  --base-font-size: 16px;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-inter: var(--font-inter);
-  --font-cormorant: var(--font-cormorant);
-}
-
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 html {
-  font-size: var(--base-font-size);
+  font-size: 16px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter);
+  @apply bg-white text-warm-900 font-sans;
   font-size: 14px;
   line-height: 1.5;
   min-height: 100vh;
 }
 
-/* Typography Utilities */
+/* Typography Utilities - using Tailwind theme */
 .text-display-xl {
-  font-family: var(--font-cormorant);
-  font-size: 2rem;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  font-weight: 600;
+  @apply font-display text-display-xl;
 }
 
 .text-display-l {
-  font-family: var(--font-cormorant);
-  font-size: 1.75rem;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-  font-weight: 600;
+  @apply font-display text-display-l;
 }
 
 /* Button Base Styles */
@@ -105,14 +38,12 @@ button, [role="button"] {
 
 /* Focus Visible Styles (Accessibility) */
 :focus-visible {
-  outline: 2px solid var(--sage-500);
-  outline-offset: 2px;
+  @apply outline-2 outline-sage-500 outline-offset-2;
 }
 
 /* Selection Color */
 ::selection {
-  background: rgba(107, 127, 110, 0.2);
-  color: var(--foreground);
+  @apply bg-sage-500/20 text-warm-900;
 }
 
 /* Scrollbar Styling (Webkit) */
@@ -122,16 +53,15 @@ button, [role="button"] {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--warm-50);
+  @apply bg-warm-50;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--warm-300);
-  border-radius: 9999px;
+  @apply bg-warm-300 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--sage-500);
+  @apply bg-sage-500;
 }
 
 /* Smooth Scroll */
@@ -147,15 +77,7 @@ button, [role="button"] {
 
 /* High Contrast Mode */
 [data-contrast="high"] {
-  --background: #FFFFFF;
-  --foreground: #000000;
-  --sage-500: #2D3A2E;
-  --sage-600: #1F2820;
-  --warm-300: #666666;
-  --warm-500: #444444;
-  --error: #CC0000;
-  --success: #008800;
-  --warning: #CC8800;
+  @apply bg-white text-black;
 }
 
 [data-contrast="high"] * {
@@ -169,8 +91,7 @@ button, [role="button"] {
 
 /* Enhanced Focus Indicators */
 [data-focus-enhanced="true"] :focus-visible {
-  outline: 4px solid var(--sage-500);
-  outline-offset: 4px;
+  @apply outline-4 outline-sage-500 outline-offset-4;
   box-shadow: 0 0 0 6px rgba(107, 127, 110, 0.2);
 }
 
@@ -201,19 +122,12 @@ button, [role="button"] {
 
 /* Skip to Main Content Link */
 .skip-to-main {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  background: var(--sage-600);
-  color: white;
-  padding: 8px 16px;
-  text-decoration: none;
+  @apply absolute -top-10 left-0 bg-sage-600 text-white px-4 py-2 no-underline z-[100];
   border-radius: 0 0 4px 0;
-  z-index: 100;
 }
 
 .skip-to-main:focus {
-  top: 0;
+  @apply top-0;
 }
 
 /* High Contrast Focus Visible */
