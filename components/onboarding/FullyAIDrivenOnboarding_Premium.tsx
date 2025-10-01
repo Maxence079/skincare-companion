@@ -26,28 +26,57 @@ interface ConversationPhase {
   name: string;
   description: string;
   placeholder: string;
+  quickReplies?: string[];
 }
 
 const PHASES: ConversationPhase[] = [
   {
     name: 'Discovery',
     description: 'Understanding your skin',
-    placeholder: "Describe your skin... (e.g., 'My T-zone gets oily by noon')",
+    placeholder: "Tell me about your skin...",
+    quickReplies: [
+      "Combination (oily T-zone, dry cheeks)",
+      "Dry and sensitive",
+      "Oily all over",
+      "Normal, no major issues",
+      "I'm not sure",
+    ],
   },
   {
     name: 'Concerns',
     description: 'Your skin goals',
-    placeholder: "What concerns you most? (e.g., 'Breakouts around my period')",
+    placeholder: "What would you like to improve?",
+    quickReplies: [
+      "Acne and breakouts",
+      "Dark spots or hyperpigmentation",
+      "Fine lines and aging",
+      "Redness and sensitivity",
+      "Dull, uneven texture",
+    ],
   },
   {
     name: 'Routine',
     description: 'Current skincare',
-    placeholder: "Your current routine... (e.g., 'Just cleanser and moisturizer')",
+    placeholder: "What products do you use?",
+    quickReplies: [
+      "Just water and moisturizer",
+      "Cleanser and moisturizer",
+      "Full routine (5+ steps)",
+      "I use makeup but minimal skincare",
+      "Nothing consistent",
+    ],
   },
   {
     name: 'Lifestyle',
     description: 'Your environment',
-    placeholder: "Tell us about your lifestyle... (e.g., 'Office work, dry climate')",
+    placeholder: "Where and how do you live?",
+    quickReplies: [
+      "Humid, tropical climate",
+      "Dry, desert climate",
+      "Indoor office work",
+      "Outdoor work or activities",
+      "Frequent travel",
+    ],
   }
 ];
 
@@ -107,6 +136,15 @@ export function FullyAIDrivenOnboardingPremium() {
     setSessionId('demo-session');
   };
 
+  const handleQuickReply = (reply: string) => {
+    setInputValue(reply);
+    // Auto-submit after brief delay for better UX
+    setTimeout(() => {
+      const event = new Event('submit', { bubbles: true, cancelable: true });
+      inputRef.current?.form?.dispatchEvent(event);
+    }, 100);
+  };
+
   useEffect(() => {
     if (!sessionId) {
       startConversation();
@@ -131,11 +169,19 @@ export function FullyAIDrivenOnboardingPremium() {
     setTimeout(() => {
       const userMessageCount = messages.filter(m => m.role === 'user').length + 1;
 
+      // Dynamic responses based on phase
+      const responses = [
+        "Perfect, I understand your skin better now. Next, what are your main skin concerns? What would you like to improve or address?",
+        "Great information! Now, tell me about your current skincare routine. What products do you typically use?",
+        "Excellent. Understanding your environment helps me tailor recommendations. Where do you spend most of your time, and what's your climate like?",
+        "Thank you for sharing all this! I have everything I need to create your personalized profile. Let's capture a baseline photo to track your progress over time."
+      ];
+
       // After 4 user messages, complete the consultation
       if (userMessageCount >= 4) {
         const aiMessage: Message = {
           role: 'assistant',
-          content: "Thank you for sharing all this valuable information! I've created your personalized skincare profile. Let's capture a baseline photo of your skin to track your progress over time.",
+          content: responses[3],
           timestamp: new Date()
         };
         setMessages(prev => [...prev, aiMessage]);
@@ -149,7 +195,7 @@ export function FullyAIDrivenOnboardingPremium() {
       } else {
         const aiMessage: Message = {
           role: 'assistant',
-          content: "Thank you for sharing. That's very helpful information. Can you tell me more about your main skin concerns?",
+          content: responses[userMessageCount - 1],
           timestamp: new Date()
         };
         setMessages(prev => [...prev, aiMessage]);
@@ -1024,7 +1070,30 @@ export function FullyAIDrivenOnboardingPremium() {
           </div>
 
           {/* Input Area */}
-          <div className="border-t border-warm-200 pt-6">
+          <div className="border-t border-warm-200 pt-6 space-y-4">
+            {/* Quick Replies */}
+            {!isLoading && PHASES[currentPhase].quickReplies && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-wrap gap-2"
+              >
+                {PHASES[currentPhase].quickReplies!.map((reply, idx) => (
+                  <motion.button
+                    key={idx}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: idx * 0.05 }}
+                    onClick={() => handleQuickReply(reply)}
+                    className="px-4 py-2.5 bg-white border-2 border-warm-200 hover:border-sage-500 hover:bg-sage-50 text-warm-800 text-sm rounded-full transition-all hover:shadow-md group"
+                  >
+                    <span className="group-hover:text-sage-700 transition-colors">{reply}</span>
+                  </motion.button>
+                ))}
+              </motion.div>
+            )}
+
+            {/* Input Form */}
             <form onSubmit={handleSubmit} className="flex gap-3">
               <input
                 ref={inputRef}
@@ -1047,6 +1116,11 @@ export function FullyAIDrivenOnboardingPremium() {
                 )}
               </button>
             </form>
+
+            {/* Helper Text */}
+            <p className="text-xs text-warm-500 text-center">
+              Choose a suggestion or type your own response
+            </p>
           </div>
         </div>
 
