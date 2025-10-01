@@ -53,11 +53,12 @@ DEPLOYMENT.md
 MOBILE_APP_GUIDE.md
 NATIVE_APP_SETUP.md
 
-# Scripts (not needed in production)
-scripts/
+# Scripts (exclude most, keep migration script)
+scripts/*
+!scripts/vercel-migrate.mjs
 
 # Archive
 archive/
 
-# Supabase migrations (already applied)
-supabase/migrations/
+# Supabase migrations (needed for automated migrations)
+# supabase/migrations/ - KEEP THIS for automated migrations
