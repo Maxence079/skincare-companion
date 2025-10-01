@@ -20,7 +20,10 @@
     "migrate:setup": "node scripts/open-db-settings.mjs",
     "generate-profiles": "npx tsx scripts/generate-training-profiles.ts",
     "db:push": "supabase db push",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "vercel:setup": "powershell -ExecutionPolicy Bypass -File scripts/setup-vercel-auto-deploy.ps1",
+    "vercel:deploy": "vercel --prod",
+    "vercel:preview": "vercel"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.65.0",
