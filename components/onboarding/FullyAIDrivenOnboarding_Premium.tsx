@@ -136,13 +136,56 @@ export function FullyAIDrivenOnboardingPremium() {
     setSessionId('demo-session');
   };
 
-  const handleQuickReply = (reply: string) => {
-    setInputValue(reply);
-    // Auto-submit after brief delay for better UX
+  const handleQuickReply = async (reply: string) => {
+    if (isLoading) return;
+
+    // Create user message immediately
+    const userMessage: Message = {
+      role: 'user',
+      content: reply,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setIsLoading(true);
+
+    // Simulate AI response
     setTimeout(() => {
-      const event = new Event('submit', { bubbles: true, cancelable: true });
-      inputRef.current?.form?.dispatchEvent(event);
-    }, 100);
+      const userMessageCount = messages.filter(m => m.role === 'user').length + 1;
+
+      // Dynamic responses based on phase
+      const responses = [
+        "Perfect, I understand your skin better now. Next, what are your main skin concerns? What would you like to improve or address?",
+        "Great information! Now, tell me about your current skincare routine. What products do you typically use?",
+        "Excellent. Understanding your environment helps me tailor recommendations. Where do you spend most of your time, and what's your climate like?",
+        "Thank you for sharing all this! I have everything I need to create your personalized profile. Let's capture a baseline photo to track your progress over time."
+      ];
+
+      // After 4 user messages, complete the consultation
+      if (userMessageCount >= 4) {
+        const aiMessage: Message = {
+          role: 'assistant',
+          content: responses[3],
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, aiMessage]);
+        setIsLoading(false);
+
+        // Trigger completion after a short delay
+        setTimeout(() => {
+          setIsDone(true);
+          setProfile({ id: 'demo-profile' });
+        }, 1000);
+      } else {
+        const aiMessage: Message = {
+          role: 'assistant',
+          content: responses[userMessageCount - 1],
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, aiMessage]);
+        setIsLoading(false);
+      }
+    }, 1500);
   };
 
   useEffect(() => {
