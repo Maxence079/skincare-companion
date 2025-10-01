@@ -5,10 +5,21 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+let supabase: ReturnType<typeof createClient> | null = null;
 
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+function getSupabase() {
+  if (!supabase) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error('[Session Service] Missing Supabase credentials');
+    }
+
+    supabase = createClient(supabaseUrl, supabaseServiceKey);
+  }
+  return supabase;
+}
 
 export interface ConversationMessage {
   role: 'user' | 'assistant';
@@ -52,7 +63,7 @@ export async function createSession(data: {
   try {
     const sessionToken = generateSessionToken();
 
-    const { data: session, error } = await supabase
+    const { data: session, error } = await getSupabase()
       .from('onboarding_sessions')
       .insert([
         {
@@ -90,7 +101,7 @@ export async function getSession(
   sessionToken: string
 ): Promise<{ success: boolean; session?: SessionData; error?: string }> {
   try {
-    const { data: session, error } = await supabase
+    const { data: session, error } = await getSupabase()
       .from('onboarding_sessions')
       .select('*')
       .eq('session_token', sessionToken)
@@ -160,7 +171,7 @@ export async function updateSession(
     // Extend expiry by 48 hours on activity
     updateData.expires_at = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString();
 
-    const { data: session, error } = await supabase
+    const { data: session, error } = await getSupabase()
       .from('onboarding_sessions')
       .update(updateData)
       .eq('session_token', sessionToken)
@@ -186,7 +197,7 @@ export async function completeSession(
   sessionToken: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const { error } = await supabase
+    const { error } = await getSupabase()
       .from('onboarding_sessions')
       .update({
         session_status: 'completed',
@@ -215,7 +226,7 @@ export async function markSessionAbandoned(
   sessionToken: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const { error } = await supabase
+    const { error } = await getSupabase()
       .from('onboarding_sessions')
       .update({
         session_status: 'abandoned',
