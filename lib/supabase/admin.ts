@@ -16,6 +16,11 @@ export function getAdminClient() {
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
     if (!supabaseUrl || !supabaseServiceKey) {
+      // During build time, return null instead of throwing
+      if (process.env.NODE_ENV === 'production' && !process.env.VERCEL_ENV) {
+        console.warn('[Supabase Admin] Missing credentials during build - will initialize at runtime')
+        return null as any
+      }
       throw new Error('[Supabase Admin] Missing URL or Service Role Key')
     }
 
@@ -43,5 +48,7 @@ export function createAdminClient() {
   return getAdminClient()
 }
 
-// Default export for convenience
-export const supabaseAdmin = getAdminClient()
+// Default export for convenience - lazy initialization
+export const supabaseAdmin = typeof process.env.NEXT_PUBLIC_SUPABASE_URL !== 'undefined'
+  ? getAdminClient()
+  : null as any
