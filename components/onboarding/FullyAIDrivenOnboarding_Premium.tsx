@@ -32,7 +32,7 @@ interface ConversationPhase {
 const PHASES: ConversationPhase[] = [
   {
     name: 'Discovery',
-    description: 'Understanding your skin',
+    description: 'Understanding your skin type',
     placeholder: "Tell me about your skin...",
     quickReplies: [
       "Combination (oily T-zone, dry cheeks)",
@@ -44,8 +44,8 @@ const PHASES: ConversationPhase[] = [
   },
   {
     name: 'Concerns',
-    description: 'Your skin goals',
-    placeholder: "What would you like to improve?",
+    description: 'Your main skin concerns',
+    placeholder: "What frustrates you most?",
     quickReplies: [
       "Acne and breakouts",
       "Dark spots or hyperpigmentation",
@@ -55,9 +55,9 @@ const PHASES: ConversationPhase[] = [
     ],
   },
   {
-    name: 'Routine',
-    description: 'Current skincare',
-    placeholder: "What products do you use?",
+    name: 'Habits',
+    description: 'Your current habits',
+    placeholder: "What do you currently use?",
     quickReplies: [
       "Just water and moisturizer",
       "Cleanser and moisturizer",
@@ -68,8 +68,8 @@ const PHASES: ConversationPhase[] = [
   },
   {
     name: 'Lifestyle',
-    description: 'Your environment',
-    placeholder: "Where and how do you live?",
+    description: 'Your lifestyle & environment',
+    placeholder: "Tell me about your daily life...",
     quickReplies: [
       "Humid, tropical climate",
       "Dry, desert climate",
@@ -1067,7 +1067,7 @@ export function FullyAIDrivenOnboardingPremium() {
               </div>
               <div>
                 <h2 className="text-sm font-medium text-warm-500 uppercase tracking-wider letter-spacing-wide">
-                  Skincare Consultation
+                  Skin Profile Creation
                 </h2>
                 <p className="text-xs text-warm-400">Step {currentPhase + 1} of 4</p>
               </div>
