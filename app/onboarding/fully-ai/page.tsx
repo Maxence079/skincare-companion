@@ -11,9 +11,7 @@ import { Loader2 } from 'lucide-react';
 
 // Lazy load the heavy onboarding component
 const FullyAIDrivenOnboardingPremium = dynamic(
-  () => import('@/components/onboarding/FullyAIDrivenOnboarding_Premium').then(mod => ({
-    default: mod.FullyAIDrivenOnboardingPremium
-  })),
+  () => import('@/components/onboarding/FullyAIDrivenOnboarding_Premium').then((mod) => mod.FullyAIDrivenOnboardingPremium),
   {
     loading: () => (
       <div className="min-h-screen bg-warm-50 flex items-center justify-center">
